@@ -66,11 +66,18 @@ $closed_tasks = $conn->query("SELECT * FROM tasks Where task_compeleted= 1");
         <div class="col-md-6">
             <h2 class="text-center">Closed Tasks</h2>
             <ul class="list-group">
+            <?php if($closed_tasks->num_rows > 0) : ?>
+                <?php while($row = $closed_tasks->fetch_assoc()) :?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?= $row['task_name'] ?>
                     <div>
-                        <a href="deleteTask.php?id=<?= $row['id']; ?>" class="btn btn-outline-warning">Delete</a>
+                        <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-warning">Delete</a>
                     </div>
                 </li>
+                <?php endwhile ?>
+            <?php else : ?>
+                <li class="list-group-item">No CLosed Tasks found.</li>
+            <?php endif ?>
             </ul>
         </div>
     </div>
