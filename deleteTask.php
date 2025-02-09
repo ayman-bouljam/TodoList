@@ -6,6 +6,7 @@ if($_SERVER['REQUEST_METHOD'] === 'GET'){
     if(isset($id) && !empty($id)){
         $stmt = $conn->prepare("DELETE FROM tasks  WHERE task_id = ?");
         $stmt->bind_param("i", $id);
+        $stmt->execute();
         $stmt->close();
         header("location:index.php");
         exit;

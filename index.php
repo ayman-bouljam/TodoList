@@ -54,7 +54,7 @@ $closed_tasks = $conn->query("SELECT * FROM tasks Where task_compeleted= 1");
                     <?= $row['task_name'] ?>
                     <div>
                         <a href="completeTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-success">Complete</a>
-                        <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-danger" onclick="return confirm('Do you want to delte this task ?');">delete</a>
+                        <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-danger" onclick="return confirm('Do you want to delete this task ?');">delete</a>
                     </div>
                     <?php endwhile; ?>
                 <?php else : ?>
