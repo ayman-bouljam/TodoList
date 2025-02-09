@@ -4,7 +4,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $taskName = $_POST['taskName'] ?? '';
     if (!empty($taskName)) {
         try {
-            $stmt = $conn->prepare('INSERT INTO tasks (task_name, created_at) VALUES (?, CURRENT_TIMESTAMP)');
+            $stmt = $conn->prepare('INSERT INTO tasks (task_name) VALUES (?)');
             
             if (!$stmt) {
                 die("Prepare failed: " . $conn->error);
@@ -22,8 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     } 
 }
 
-$open_tasks = $conn->query("SELECT * FROM tasks Where task_compeleted= 0");
-$closed_tasks = $conn->query("SELECT * FROM tasks Where task_compeleted= 1");
+$open_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 0");
+$closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1");
 
 
 ?>
@@ -71,7 +71,7 @@ $closed_tasks = $conn->query("SELECT * FROM tasks Where task_compeleted= 1");
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <?= $row['task_name'] ?>
                     <div>
-                        <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-warning" >Delete</a>
+                        <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-warning" onclick="return confirm('Do you want to delete this task ?');" >Delete</a>
                     </div>
                 </li>
                 <?php endwhile ?>
