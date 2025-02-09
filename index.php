@@ -22,9 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     } 
 }
 
-$open_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 0");
-$closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1");
-
+$open_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 0 AND task_inprogress = 0 AND task_deleted = 0");
+$inprogress_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 0 AND task_inprogress = 1 AND task_deleted = 0" );
+$closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1 AND task_inprogress = 0 AND task_deleted = 0");
+$deleted_tasks = $conn->query("SELECT * FROM tasks Where task_deleted = 1");
 
 ?>
 <!DOCTYPE html>
@@ -44,12 +45,31 @@ $closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1");
             <button type="submit" class="btn btn-outline-dark">Add</button>
         </div>
     </form>
-    <div class="row">
+    <div class="row pt-4">
         <div class="col-md-6">
             <h2 class="text-center">Open Tasks</h2>
             <ul class="list-group">
                 <?php if($open_tasks->num_rows > 0) : ?>
                     <?php while($row = $open_tasks->fetch_assoc()) :?>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?= $row['task_name'] ?>
+                    <div>
+                        <a href="in_progress_task.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-primary">In Progress</a>
+                        <a href="completeTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-success">Complete</a>
+                        <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-danger" onclick="return confirm('Do you want to delete this task ?');">delete</a>
+                    </div>
+                    <?php endwhile; ?>
+                <?php else : ?>
+                    <li class="list-group-item">No open tasks found.</li>
+                <?php endif ?>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-center">In Progress Tasks</h2>
+            <ul class="list-group">
+                <?php if($inprogress_tasks->num_rows > 0) : ?>
+                    <?php while($row = $inprogress_tasks->fetch_assoc()) :?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <?= $row['task_name'] ?>
                     <div>
@@ -63,7 +83,7 @@ $closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1");
                 </li>
             </ul>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 mt-5">
             <h2 class="text-center">Closed Tasks</h2>
             <ul class="list-group">
             <?php if($closed_tasks->num_rows > 0) : ?>
@@ -72,6 +92,23 @@ $closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1");
                     <?= $row['task_name'] ?>
                     <div>
                         <a href="deleteTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-warning" onclick="return confirm('Do you want to delete this task ?');" >Delete</a>
+                    </div>
+                </li>
+                <?php endwhile ?>
+            <?php else : ?>
+                <li class="list-group-item">No CLosed Tasks found.</li>
+            <?php endif ?>
+            </ul>
+        </div>
+        <div class="col-md-6 mt-5">
+            <h2 class="text-center">Deleted Tasks</h2>
+            <ul class="list-group">
+            <?php if($deleted_tasks->num_rows > 0) : ?>
+                <?php while($row = $deleted_tasks->fetch_assoc()) :?>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <?= $row['task_name'] ?>
+                    <div>
+                        <a href="recoverTask.php?id=<?= $row['task_id']; ?>" class="btn btn-outline-warning" onclick="return confirm('Do you want to recover this task ?');" >Cancel</a>
                     </div>
                 </li>
                 <?php endwhile ?>
