@@ -28,6 +28,13 @@ $inprogress_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 0 AN
 $closed_tasks = $conn->query("SELECT * FROM tasks Where task_completed= 1 AND task_inprogress = 0 AND task_deleted = 0");
 $deleted_tasks = $conn->query("SELECT * FROM tasks Where task_deleted = 1");
 
+if(isset($_SESSION['username'])){
+    $username = $_SESSION['username'];
+}else{
+    header("location:login.php");
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,12 +68,7 @@ $deleted_tasks = $conn->query("SELECT * FROM tasks Where task_deleted = 1");
 </nav>
     <h1 class="text-center mt-3">To Do list by Aymane</h1>
   <div class="container mt-5 p-4 bg-light text-center">
-        <?php
-            $username = $_SESSION['username'];
-            if(isset($username)){
-                echo "<h2>Welcome $username </h2>";
-            }
-        ?>     
+        <?php echo "<h3>Welcome $username</h3>" ?>
     <form action="index.php" method="POST"  class="my-4">
         <div class="input-group w-50 mx-auto">
             <input type="text" name="taskName" class="form-control d-block" placeholder="New Task ..." require />

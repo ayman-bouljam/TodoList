@@ -1,6 +1,30 @@
 <?php
     include "db.php";
     session_start();
+
+    if($_SERVER["REQUEST_METHOD"] === "POST"){
+        $username = trim($_POST["username"]);
+        $password = trim($_POST["password"]);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        try{
+            $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? ");
+            $stmt->bind_param('s',$username);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if($row = $result->fetch_assoc()){
+                if(password_verify($password, $row['password'])){
+                    $_SESSION['username'] = $row['username'];
+                    header("location:index.php");
+                    exit;
+                }else{
+                    echo "<p class='text-center text-danger'>Username or Password is not correct </p>";
+                }
+            }
+            $stmt->close();
+        }catch(Exception $e){
+            die('Login Failed '.$e->getMessage());
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
