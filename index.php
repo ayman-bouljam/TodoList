@@ -1,5 +1,6 @@
 <?php
 include "db.php";
+session_start();
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $taskName = $_POST['taskName'] ?? '';
     if (!empty($taskName)) {
@@ -49,18 +50,24 @@ $deleted_tasks = $conn->query("SELECT * FROM tasks Where task_deleted = 1");
                     <a class="nav-link active" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Log in</a>
+                    <a class="nav-link" href="login.php">Log in</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Sign up</a>
+                    <a class="nav-link" href="register.php">Register</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-  <div class="container mt-5 p-4 bg-light">
-        <h1 class="text-center">To Do list by Aymane</h1>
-    <form action="index.php" method="POST"  class="mb-4">
+    <h1 class="text-center mt-3">To Do list by Aymane</h1>
+  <div class="container mt-5 p-4 bg-light text-center">
+        <?php
+            $username = $_SESSION['username'];
+            if(isset($username)){
+                echo "<h2>Welcome $username </h2>";
+            }
+        ?>     
+    <form action="index.php" method="POST"  class="my-4">
         <div class="input-group w-50 mx-auto">
             <input type="text" name="taskName" class="form-control d-block" placeholder="New Task ..." require />
             <button type="submit" class="btn btn-outline-dark">Add</button>
